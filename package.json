@@ -1,0 +1,22 @@
+{
+  "name": "get-stargazer-info",
+  "version": "1.0.0",
+  "description": "GitHub graphQL scripts that can be used to get information about the stargazers of a given repository.",
+  "main": "get-stargazers.js",
+  "keywords": [
+    "github",
+    "graphql",
+    "stargazers"
+  ],
+  "scripts": {
+    "get-stargazers": "node get-stargazers.js",
+    "get-reviews-info": "node get-stargazers-reviews.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rick Staa",
+  "license": "ISC",
+  "dependencies": {
+    "@octokit/plugin-throttling": "^6.1.0",
+    "@octokit/rest": "^19.0.13"
+  }
+}

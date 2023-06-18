@@ -1,0 +1,6 @@
+data
+node_modules
+
+# IDE
+.vscode
+*.code-workspace
