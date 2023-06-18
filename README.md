@@ -16,9 +16,7 @@ OWNER=REPOSITORY_OWNER
 3.  Run the `get-stargazers.js` script with `npm run get-stargazers`.
 4.  Run other scripts with `npm run <SCRIPT_NAME>`. The available scripts found in the `package.json` file.
 
-> **Note**
-> Data is stored in the `data` folder. The `get-stargazers.js` script will create a `stargazers.json` file with the stargazers of the repository.
-> The other scripts will use this file to get the data.
+Data is stored in the `data` folder. The `get-stargazers.js` script will create a `stargazers.json` file with the stargazers of the repository. The other scripts will use this file to get the data.
 
 > **Warning**
 > This script uses the [@octokit/plugin-throttling](https://www.npmjs.com/package/@octokit/plugin-throttling) to avoid hitting the GitHub API rate limit. This is done
