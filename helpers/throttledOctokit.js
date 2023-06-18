@@ -8,6 +8,8 @@ const { throttling } = require("@octokit/plugin-throttling");
 
 const MyOctokit = Octokit.plugin(throttling);
 
+require("dotenv").config();
+
 /** Setup throttled octokit instance.
  * @type {import("@octokit/rest").Octokit}
  *

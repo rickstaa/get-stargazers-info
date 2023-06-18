@@ -10,13 +10,14 @@
   ],
   "scripts": {
     "get-stargazers": "node get-stargazers.js",
-    "get-reviews-info": "node get-stargazers-reviews.js",
+    "get-stargazers-reviews": "node get-stargazers-reviews.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Rick Staa",
   "license": "ISC",
   "dependencies": {
     "@octokit/plugin-throttling": "^6.1.0",
-    "@octokit/rest": "^19.0.13"
+    "@octokit/rest": "^19.0.13",
+    "dotenv": "^16.3.1"
   }
 }
