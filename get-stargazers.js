@@ -17,25 +17,17 @@ const main = async () => {
 
   // Retrieve all stargazers of a given repository.
   const stargazers = [];
-  // for await (const response of octokit.paginate.iterator(
-  //   octokit.rest.activity.listStargazersForRepo,
-  //   {
-  //     owner,
-  //     repo,
-  //     per_page: 100,
-  //   }
-  // )) {
-  //   for (const stargazer of response.data) {
-  //     stargazers.push(stargazer.login);
-  //   }
-  // }
-  const response = await octokit.rest.activity.listStargazersForRepo({
-    owner,
-    repo,
-    per_page: 100,
-  });
-  for (const stargazer of response.data) {
-    stargazers.push(stargazer.login);
+  for await (const response of octokit.paginate.iterator(
+    octokit.rest.activity.listStargazersForRepo,
+    {
+      owner,
+      repo,
+      per_page: 100,
+    }
+  )) {
+    for (const stargazer of response.data) {
+      stargazers.push(stargazer.login);
+    }
   }
 
   // Store the stargazers in a json file.
