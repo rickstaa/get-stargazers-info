@@ -13,8 +13,7 @@ require("dotenv").config();
  */
 const main = async () => {
   // Retrieve the stargazers from the json file.
-  // const stargazers = JSON.parse(fs.readFileSync("data/stargazers.json"));
-  const stargazers = ["rickstaa", "anuraghazra", "sindresorhus"];
+  const stargazers = JSON.parse(fs.readFileSync("data/stargazers.json"));
 
   // Get info about the stargazers.
   console.log("Retrieving info of stargazers...");
