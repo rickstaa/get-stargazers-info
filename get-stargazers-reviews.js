@@ -38,7 +38,10 @@ const main = async () => {
     }
 
     // Print the number of the stargazer every 1000 stargazers.
-    if (stargazers.indexOf(stargazer) % 500 === 0) {
+    if (
+      (stargazers.indexOf(stargazer) + 1) % 100 === 0 &&
+      stargazers.indexOf(stargazer) !== 0
+    ) {
       console.log(
         `Reviews info retrieved of '${
           stargazers.indexOf(stargazer) + 1
