@@ -14,23 +14,28 @@ require("dotenv").config();
  */
 const main = async () => {
   // Retrieve the stargazers from the json file.
-  const stargazers = JSON.parse(fs.readFileSync("data/stargazers.json"));
+  // const stargazers = JSON.parse(fs.readFileSync("data/stargazers.json"));
+  const stargazers = ["rickstaa", "colomn"];
 
   // Get the total number of reviews each stargazer has made.
   const reviews = [];
   for (const stargazer of stargazers) {
-    const data = await octokit.graphql(`
-            query {
-                user(login: "${stargazer}") {
-                    contributionsCollection {
-                        totalPullRequestReviewContributions
-                    }
-                }
-            }
-        `);
-    reviews.push(
-      data.user.contributionsCollection.totalPullRequestReviewContributions
-    );
+    try {
+      const data = await octokit.graphql(`
+              query {
+                  user(login: "${stargazer}") {
+                      contributionsCollection {
+                          totalPullRequestReviewContributions
+                      }
+                  }
+              }
+          `);
+      reviews.push(
+        data.user.contributionsCollection.totalPullRequestReviewContributions
+      );
+    } catch (error) {
+      console.log(error.errors[0].message);
+    }
   }
 
   // Store the reviews in a json file.
