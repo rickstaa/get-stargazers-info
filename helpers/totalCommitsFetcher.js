@@ -25,10 +25,12 @@ const http = rateLimit(axios.create(), {
  */
 const totalCommitsFetcher = async (username) => {
   // https://developer.github.com/v3/search/#search-commits
-  const fetchTotalCommits = (variables, token) => {
-    return axios({
-      method: "get",
-      url: `https://api.github.com/search/commits?q=author:${variables.login}`,
+  const fetchTotalCommits = (user, token) => {
+    return http.get("https://api.github.com/search/commits", {
+      params: {
+        q: `author:${user}`,
+        per_page: 1,
+      },
       headers: {
         "Content-Type": "application/json",
         Accept: "application/vnd.github.cloak-preview",
@@ -38,10 +40,7 @@ const totalCommitsFetcher = async (username) => {
   };
 
   try {
-    let res = await fetchTotalCommits(
-      { login: username },
-      process.env.GITHUB_TOKEN
-    );
+    let res = await fetchTotalCommits(username, process.env.GITHUB_TOKEN);
     let total_count = res.data.total_count;
     if (!!total_count && !isNaN(total_count)) {
       return res.data.total_count;
@@ -49,8 +48,9 @@ const totalCommitsFetcher = async (username) => {
   } catch (err) {
     logger.log(err);
   }
+
   // just return 0 if there is something wrong so that
-  // we don't break the whole app
+  // we don't break the data collection process
   return 0;
 };
 
