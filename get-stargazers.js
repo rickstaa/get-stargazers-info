@@ -16,6 +16,7 @@ const main = async () => {
   const owner = process.env.OWNER;
 
   // Retrieve all stargazers of a given repository.
+  console.log("Retrieving stargazers...");
   const stargazers = [];
   for await (const response of octokit.paginate.iterator(
     octokit.rest.activity.listStargazersForRepo,
@@ -31,6 +32,7 @@ const main = async () => {
   }
 
   // Store the stargazers in a json file.
+  console.log("Storing stargazers in a json file...");
   fs.writeFileSync("data/stargazers.json", JSON.stringify(stargazers));
 };
 
