@@ -14,7 +14,19 @@ const main = async () => {
   // Retrieve all stargazers of a given repository.
   const repo = process.env.REPO;
   const owner = process.env.OWNER;
-  const SAVE_FREQUENCY = process.env.SAVE_FREQUENCY || 1000;
+  const logFrequency = Math.round(process.env.LOG_FREQUENCY / 100) * 100 || 100;
+  const saveFrequency =
+    Math.round(process.env.SAVE_FREQUENCY / 100) * 100 || 1000;
+  if (process.env.LOG_FREQUENCY % 100 !== 0) {
+    console.log(
+      `Get-stargazers only accepts multiples of 100 as a value for LOG_FREQUENCY. Rounded to '${logFrequency}'.`
+    );
+  }
+  if (process.env.SAVE_FREQUENCY % 100 !== 0) {
+    console.log(
+      `Get-stargazers only accepts multiples of 100 as a value for SAVE_FREQUENCY. Rounded to '${saveFrequency}'.`
+    );
+  }
   const useGraphQL = process.env.USE_GRAPHQL === "true";
 
   // Retrieve all stargazers of a given repository. Don't use pagination because of the 40 pages limit. Use graphql instead.
@@ -52,8 +64,11 @@ const main = async () => {
       cursor = response.repository.stargazers.pageInfo.endCursor;
       hasNextPage = response.repository.stargazers.pageInfo.hasNextPage;
 
-      // Store intermediate results in a json file per 1000 stargazers.
-      if (stargazers.length % SAVE_FREQUENCY === 0) {
+      // Log and store intermediate results.
+      if (stargazers.length % logFrequency === 0) {
+        console.log(`Retrieved '${stargazers.length}' stargazers...`);
+      }
+      if (stargazers.length % saveFrequency === 0) {
         console.log(
           `Storing '${stargazers.length}' stargazers in a json file...`
         );
@@ -65,8 +80,6 @@ const main = async () => {
             stargazers: stargazers,
           })
         );
-      } else if (stargazers.length % 100 === 0) {
-        console.log(`Retrieved '${stargazers.length}' stargazers...`);
       }
     }
   } else {
@@ -84,8 +97,11 @@ const main = async () => {
         stargazers.push(stargazer.login);
       }
 
-      // Store intermediate results in a json file per 1000 stargazers.
-      if (stargazers.length % SAVE_FREQUENCY === 0) {
+      // Log and store intermediate results.
+      if (stargazers.length % logFrequency === 0) {
+        console.log(`Retrieved '${stargazers.length}' stargazers...`);
+      }
+      if (stargazers.length % saveFrequency === 0) {
         console.log(
           `Storing '${stargazers.length}' stargazers in a json file...`
         );
@@ -113,6 +129,7 @@ const main = async () => {
       stargazers: stargazers,
     })
   );
+  console.log("Finished!");
 };
 
 main();
