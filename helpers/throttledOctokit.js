@@ -2,7 +2,6 @@
  * Wraps the octokit instance with the throttling plugin. This prevents the script from
  * being blocked by GitHub's rate limit.
  */
-
 const { Octokit } = require("@octokit/rest");
 const { throttling } = require("@octokit/plugin-throttling");
 
@@ -29,11 +28,16 @@ const octokit = new MyOctokit({
         return true;
       }
     },
-    onSecondaryRateLimit: (retryAfter, options, octokit) => {
-      // does not retry, only logs a warning
+    onSecondaryRateLimit: (retryAfter, options, octokit, retryCount) => {
       octokit.log.warn(
         `SecondaryRateLimit detected for request ${options.method} ${options.url}`
       );
+
+      if (retryCount < 1) {
+        // only retries once
+        octokit.log.info(`Retrying after ${retryAfter} seconds!`);
+        return true;
+      }
     },
   },
 });

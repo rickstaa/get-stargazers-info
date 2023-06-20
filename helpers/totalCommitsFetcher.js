@@ -1,52 +1,44 @@
 /**
  * Small helper function to fetch the total number of commits of a user using the GitHub
- * REST API.
+ * GraphQL API.
  */
-
-const axios = require("axios");
-const rateLimit = require("axios-rate-limit");
+// const axios = require("axios");
+const octokit = require("./throttledOctokit");
 
 require("dotenv").config();
-
-// Ensure that we stay below the rate limit of the GitHub API.
-// See:
-const http = rateLimit(axios.create(), {
-  maxRequests: 3.5,
-});
 
 /**
  * Fetch all the commits for all the repositories of a given username.
  *
  * @param {*} username GitHub username.
  * @returns {Promise<number>} Total commits.
- *
- * @description Done like this because the GitHub API does not provide a way to fetch all the commits. See
- * #92#issuecomment-661026467 and #211 for more information.
  */
 const totalCommitsFetcher = async (username) => {
-  // https://developer.github.com/v3/search/#search-commits
-  const fetchTotalCommits = (user, token) => {
-    return http.get("https://api.github.com/search/commits", {
-      params: {
-        q: `author:${user}`,
+  // Fetch total commits of a user. Retry 2 times if the request fails.
+  let retries = 0;
+  while (retries < 2) {
+    try {
+      const res = await octokit.rest.search.commits({
+        q: `author:${username}`,
         per_page: 1,
-      },
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/vnd.github.cloak-preview",
-        Authorization: `token ${token}`,
-      },
-    });
-  };
-
-  try {
-    let res = await fetchTotalCommits(username, process.env.GITHUB_TOKEN);
-    let total_count = res.data.total_count;
-    if (!!total_count && !isNaN(total_count)) {
-      return res.data.total_count;
+      });
+      let total_count = res.data.total_count;
+      if (!!total_count && !isNaN(total_count)) {
+        return res.data.total_count;
+      }
+    } catch (e) {
+      switch (e.status) {
+        case 422: // If user is not found return 0.
+          console.log(
+            `Total commits for user '${username}' could not be retrieved.`
+          );
+          return 0;
+        default:
+          console.log(e);
+          break;
+      }
     }
-  } catch (err) {
-    logger.log(err);
+    retries++;
   }
 
   // just return 0 if there is something wrong so that

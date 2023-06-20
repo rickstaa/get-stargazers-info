@@ -12,8 +12,14 @@ require("dotenv").config();
  * Main function.
  */
 const main = async () => {
+  const repo = process.env.REPO;
+  const owner = process.env.OWNER;
+  const SAVE_FREQUENCY = process.env.SAVE_FREQUENCY || 1000;
+
   // Retrieve the stargazers from the json file.
-  const stargazers = JSON.parse(fs.readFileSync("data/stargazers.json"));
+  const { stargazers } = JSON.parse(
+    fs.readFileSync(`data/${owner}-${repo}-stargazers.json`)
+  );
 
   // Get info about the stargazers.
   console.log("Retrieving info of stargazers...");
@@ -73,13 +79,17 @@ const main = async () => {
       }
 
       // Get total commits.
-      const totalCommits = await totalCommitsFetcher(stargazer);
+      let totalCommits = {};
+      if (process.env.TOTAL_COMMITS === "true") {
+        totalCommits = {
+          totalCommits: await totalCommitsFetcher(stargazer),
+        };
+      }
 
-      // Store info.
+      // Store info add total commits if 'env.process.TOTAL_COMMITS' is set to true.
       info.push({
         name: stargazer,
         yearCommits: data.user.contributionsCollection.totalCommitContributions,
-        totalCommits: totalCommits,
         prs: data.user.pullRequests.totalCount,
         issues:
           data.user.openIssues.totalCount + data.user.closedIssues.totalCount,
@@ -90,6 +100,7 @@ const main = async () => {
           data.user.contributionsCollection.totalPullRequestReviewContributions,
         discussionsStarted: data.user.repositoryDiscussions.totalCount,
         discussionsAnswered: data.user.repositoryDiscussionComments.totalCount,
+        ...totalCommits,
       });
 
       // Store the info about the stargazer.
@@ -98,19 +109,35 @@ const main = async () => {
     }
 
     // Print the number of the stargazer every 1000 stargazers.
-    if (
-      (stargazers.indexOf(stargazer) + 1) % 100 === 0 &&
-      stargazers.indexOf(stargazer) !== 0
-    ) {
+    if (info.length % SAVE_FREQUENCY === 0) {
       console.log(
-        `Info retrieved for '${stargazers.indexOf(stargazer) + 1}' stargazers.`
+        `Storing info of '${stargazers.length}' stargazers in a json file...`
       );
+      fs.writeFileSync(
+        `data/${owner}-${repo}-stargazers-info.json`,
+        JSON.stringify({
+          lastStargazer: stargazer,
+          finished: stargazer === stargazers[stargazers.length - 1],
+          info: info,
+        })
+      );
+    } else if (stargazers.length % 100 === 0) {
+      console.log(`Retrieved '${stargazers.length}' stargazers...`);
     }
   }
 
   // Store the reviews in a json file.
-  console.log("Storing stargazers info in a json file...");
-  fs.writeFileSync("data/stargazers-info.json", JSON.stringify(info));
+  console.log(
+    `Storing info of '${stargazers.length}' stargazers in a json file...`
+  );
+  fs.writeFileSync(
+    `data/${owner}-${repo}-stargazers-info.json`,
+    JSON.stringify({
+      lastStargazer: stargazer,
+      finished: stargazer === stargazers[stargazers.length - 1],
+      info: info,
+    })
+  );
 };
 
 main();
