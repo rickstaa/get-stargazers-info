@@ -20,8 +20,8 @@ const main = async () => {
   const saveFrequency = process.env.SAVE_FREQUENCY || 1000;
   const load = process.env.LOAD === "true";
   const fileName = getTotalCommits
-    ? `data/total-commits-${owner}-${repo}-stargazers.json`
-    : `data/${owner}-${repo}-stargazers.json`;
+    ? `data/total-commits-${owner}-${repo}-stargazers-info.json`
+    : `data/${owner}-${repo}-stargazers-info.json`;
 
   // Create data folder if it doesn't exist.
   if (!fs.existsSync("data")) {
