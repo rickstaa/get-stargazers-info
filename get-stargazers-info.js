@@ -14,6 +14,8 @@ require("dotenv").config();
 const main = async () => {
   const repo = process.env.REPO;
   const owner = process.env.OWNER;
+  const getMainInfo = process.env.MAIN_INFO === "true";
+  const getTotalCommits = process.env.TOTAL_COMMITS === "true";
   const logFrequency = process.env.LOG_FREQUENCY || 100;
   const saveFrequency = process.env.SAVE_FREQUENCY || 1000;
 
@@ -32,7 +34,9 @@ const main = async () => {
   const info = [];
   for (const stargazer of stargazers) {
     try {
-      const data = await octokit.graphql(`
+      let infoTmp = { name: stargazer };
+      if (getMainInfo) {
+        const data = await octokit.graphql(`
               query {
                   user(login: "${stargazer}") {
                     repositories(first: 100, ownerAffiliations: OWNER, orderBy: {direction: DESC, field: STARGAZERS}) {
@@ -78,36 +82,44 @@ const main = async () => {
               }
           `);
 
-      // Get the total number of stars.
-      let totalStars = 0;
-      for (const repo of data.user.repositories.nodes) {
-        totalStars += repo.stargazers.totalCount;
+        // Get the total number of stars.
+        let totalStars = 0;
+        for (const repo of data.user.repositories.nodes) {
+          totalStars += repo.stargazers.totalCount;
+        }
+
+        // Store main info.
+        infoTmp = {
+          yearCommits:
+            data.user.contributionsCollection.totalCommitContributions,
+          prs: data.user.pullRequests.totalCount,
+          issues:
+            data.user.openIssues.totalCount + data.user.closedIssues.totalCount,
+          repos: data.user.repositories.totalCount,
+          stars: totalStars,
+          followers: data.user.followers.totalCount,
+          reviews:
+            data.user.contributionsCollection
+              .totalPullRequestReviewContributions,
+          discussionsStarted: data.user.repositoryDiscussions.totalCount,
+          discussionsAnswered:
+            data.user.repositoryDiscussionComments.totalCount,
+        };
       }
 
       // Get total commits.
       let totalCommits = {};
-      if (process.env.TOTAL_COMMITS === "true") {
+      if (getTotalCommits) {
         totalCommits = {
           totalCommits: await totalCommitsFetcher(stargazer),
         };
+
+        // Store total commits.
+        infoTmp = { ...infoTmp, ...totalCommits };
       }
 
       // Store info add total commits if 'env.process.TOTAL_COMMITS' is set to true.
-      info.push({
-        name: stargazer,
-        yearCommits: data.user.contributionsCollection.totalCommitContributions,
-        prs: data.user.pullRequests.totalCount,
-        issues:
-          data.user.openIssues.totalCount + data.user.closedIssues.totalCount,
-        repos: data.user.repositories.totalCount,
-        stars: totalStars,
-        followers: data.user.followers.totalCount,
-        reviews:
-          data.user.contributionsCollection.totalPullRequestReviewContributions,
-        discussionsStarted: data.user.repositoryDiscussions.totalCount,
-        discussionsAnswered: data.user.repositoryDiscussionComments.totalCount,
-        ...totalCommits,
-      });
+      info.push(infoTmp);
 
       // Store the info about the stargazer.
     } catch (error) {

@@ -13,6 +13,7 @@ REPO=REPOSITORY_NAME
 OWNER=REPOSITORY_OWNER
 LOG_FREQUENCY=100
 SAVE_FREQUENCY=1000
+MAIN_INFO=true
 TOTAL_COMMITS=true
 USE_GRAPHQL=false # Only use for the 'get-stargazers' script. Slower but doesn't have a 40 pages limit.
 ```
