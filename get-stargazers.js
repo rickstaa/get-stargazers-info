@@ -11,7 +11,6 @@ require("dotenv").config();
  * Main function.
  */
 const main = async () => {
-  // Retrieve all stargazers of a given repository.
   const repo = process.env.REPO;
   const owner = process.env.OWNER;
   const logFrequency = Math.round(process.env.LOG_FREQUENCY / 100) * 100 || 100;
@@ -28,6 +27,11 @@ const main = async () => {
     );
   }
   const useGraphQL = process.env.USE_GRAPHQL === "true";
+
+  // Create data folder if it doesn't exist.
+  if (!fs.existsSync("data")) {
+    fs.mkdirSync("data");
+  }
 
   // Retrieve all stargazers of a given repository. Don't use pagination because of the 40 pages limit. Use graphql instead.
   const stargazers = [];

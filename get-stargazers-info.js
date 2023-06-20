@@ -17,6 +17,11 @@ const main = async () => {
   const logFrequency = process.env.LOG_FREQUENCY || 100;
   const saveFrequency = process.env.SAVE_FREQUENCY || 1000;
 
+  // Create data folder if it doesn't exist.
+  if (!fs.existsSync("data")) {
+    fs.mkdirSync("data");
+  }
+
   // Retrieve the stargazers from the json file.
   const { stargazers } = JSON.parse(
     fs.readFileSync(`data/${owner}-${repo}-stargazers.json`)
