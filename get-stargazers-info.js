@@ -127,7 +127,7 @@ const main = async () => {
     }
 
     // Log and store intermediate results.
-    if (stargazers.length % logFrequency === 0) {
+    if (info.length % logFrequency === 0) {
       console.log(`Retrieved info about '${info.length}' stargazers...`);
     }
     if (info.length % saveFrequency === 0) {
