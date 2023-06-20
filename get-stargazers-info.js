@@ -14,7 +14,8 @@ require("dotenv").config();
 const main = async () => {
   const repo = process.env.REPO;
   const owner = process.env.OWNER;
-  const SAVE_FREQUENCY = process.env.SAVE_FREQUENCY || 1000;
+  const logFrequency = process.env.LOG_FREQUENCY || 100;
+  const saveFrequency = process.env.SAVE_FREQUENCY || 1000;
 
   // Retrieve the stargazers from the json file.
   const { stargazers } = JSON.parse(
@@ -108,10 +109,13 @@ const main = async () => {
       console.log(error.errors[0].message);
     }
 
-    // Print the number of the stargazer every 1000 stargazers.
-    if (info.length % SAVE_FREQUENCY === 0) {
+    // Log and store intermediate results.
+    if (stargazers.length % logFrequency === 0) {
+      console.log(`Retrieved info about '${info.length}' stargazers...`);
+    }
+    if (info.length % saveFrequency === 0) {
       console.log(
-        `Storing info of '${stargazers.length}' stargazers in a json file...`
+        `Storing info of '${info.length}' stargazers in a json file...`
       );
       fs.writeFileSync(
         `data/${owner}-${repo}-stargazers-info.json`,
@@ -121,8 +125,6 @@ const main = async () => {
           info: info,
         })
       );
-    } else if (stargazers.length % 100 === 0) {
-      console.log(`Retrieved '${stargazers.length}' stargazers...`);
     }
   }
 
@@ -133,11 +135,12 @@ const main = async () => {
   fs.writeFileSync(
     `data/${owner}-${repo}-stargazers-info.json`,
     JSON.stringify({
-      lastStargazer: stargazer,
-      finished: stargazer === stargazers[stargazers.length - 1],
+      lastStargazer: stargazers[stargazers.length - 1],
+      finished: true,
       info: info,
     })
   );
+  console.log("Finished!");
 };
 
 main();
