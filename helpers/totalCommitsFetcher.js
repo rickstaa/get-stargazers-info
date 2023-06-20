@@ -15,30 +15,26 @@ require("dotenv").config();
  */
 const totalCommitsFetcher = async (username) => {
   // Fetch total commits of a user. Retry 2 times if the request fails.
-  let retries = 0;
-  while (retries < 2) {
-    try {
-      const res = await octokit.rest.search.commits({
-        q: `author:${username}`,
-        per_page: 1,
-      });
-      let total_count = res.data.total_count;
-      if (!!total_count && !isNaN(total_count)) {
-        return res.data.total_count;
-      }
-    } catch (e) {
-      switch (e.status) {
-        case 422: // If user is not found return 0.
-          console.log(
-            `Total commits for user '${username}' could not be retrieved.`
-          );
-          return 0;
-        default:
-          console.log(e);
-          break;
-      }
+  try {
+    const res = await octokit.rest.search.commits({
+      q: `author:${username}`,
+      per_page: 1,
+    });
+    let total_count = res.data.total_count;
+    if (!!total_count && !isNaN(total_count)) {
+      return res.data.total_count;
     }
-    retries++;
+  } catch (e) {
+    switch (e.status) {
+      case 422: // If user is not found return 0.
+        console.log(
+          `Total commits for user '${username}' could not be retrieved.`
+        );
+        return 0;
+      default:
+        console.log(e);
+        break;
+    }
   }
 
   // just return 0 if there is something wrong so that

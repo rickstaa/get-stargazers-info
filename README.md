@@ -11,11 +11,12 @@ Contains scripts that can be used to get information about the stargazers of a G
 GITHUB_TOKEN=YOUR_GITHUB_TOKEN
 REPO=REPOSITORY_NAME
 OWNER=REPOSITORY_OWNER
-LOG_FREQUENCY=100
-SAVE_FREQUENCY=1000
+LOG_FREQUENCY=50
+SAVE_FREQUENCY=100
 MAIN_INFO=true
-TOTAL_COMMITS=true
+TOTAL_COMMITS=false
 USE_GRAPHQL=false # Only use for the 'get-stargazers' script. Slower but doesn't have a 40 pages limit.
+LOAD=false # Whether to continue from the last saved point or start from scratch. Only use for the 'get-stargazers' script.
 ```
 
 1.  Run the `get-stargazers.js` script with `npm run get-stargazers` to get the stargazers of the repository.

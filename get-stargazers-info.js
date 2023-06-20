@@ -18,6 +18,7 @@ const main = async () => {
   const getTotalCommits = process.env.TOTAL_COMMITS === "true";
   const logFrequency = process.env.LOG_FREQUENCY || 100;
   const saveFrequency = process.env.SAVE_FREQUENCY || 1000;
+  const load = process.env.LOAD === "true";
 
   // Create data folder if it doesn't exist.
   if (!fs.existsSync("data")) {
@@ -29,12 +30,34 @@ const main = async () => {
     fs.readFileSync(`data/${owner}-${repo}-stargazers.json`)
   );
 
+  // Continue from previous run if 'env.process.LOAD' is set to true.
+  let info = [];
+  let stargazersInfo = {};
+  if (load) {
+    try {
+      stargazersInfo = JSON.parse(
+        fs.readFileSync(`data/${owner}-${repo}-stargazers-info.json`)
+      );
+      info = stargazersInfo.info;
+    }
+    catch (e) {
+      console.error("Could not load data from previous run. Check if the file exists or change the 'env.process.LOAD' variable to false.");
+    }
+
+    // Get last stargazer and remove stargazers that have already been processed.
+    const lastStargazer = stargazersInfo.lastStargazer;
+    const lastStargazerIndex = stargazers.indexOf(lastStargazer);
+    if (lastStargazerIndex === -1) {
+      throw Error("Could not find last stargazer in the list of stargazers. Check if the file exists or change the 'env.process.LOAD' variable to false.");
+    }
+    stargazers.splice(0, lastStargazerIndex + 1);
+  }
+
   // Get info about the stargazers.
   console.log("Retrieving info of stargazers...");
-  const info = [];
   for (const stargazer of stargazers) {
     try {
-      let infoTmp = { name: stargazer };
+      let infoTmp = {};
       if (getMainInfo) {
         const data = await octokit.graphql(`
               query {
@@ -90,6 +113,7 @@ const main = async () => {
 
         // Store main info.
         infoTmp = {
+          name: stargazer,
           yearCommits:
             data.user.contributionsCollection.totalCommitContributions,
           prs: data.user.pullRequests.totalCount,
@@ -123,7 +147,8 @@ const main = async () => {
 
       // Store the info about the stargazer.
     } catch (error) {
-      console.log(error.errors[0].message);
+      console.log(`Could not retrieve info about '${stargazer}'...`)
+      continue;
     }
 
     // Log and store intermediate results.
