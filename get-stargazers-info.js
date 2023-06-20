@@ -19,6 +19,9 @@ const main = async () => {
   const logFrequency = process.env.LOG_FREQUENCY || 100;
   const saveFrequency = process.env.SAVE_FREQUENCY || 1000;
   const load = process.env.LOAD === "true";
+  const fileName = getTotalCommits
+    ? `data/total-commits-${owner}-${repo}-stargazers.json`
+    : `data/${owner}-${repo}-stargazers.json`;
 
   // Create data folder if it doesn't exist.
   if (!fs.existsSync("data")) {
@@ -160,7 +163,7 @@ const main = async () => {
         `Storing info of '${info.length}' stargazers in a json file...`
       );
       fs.writeFileSync(
-        `data/${owner}-${repo}-stargazers-info.json`,
+        fileName,
         JSON.stringify({
           lastStargazer: stargazer,
           finished: stargazer === stargazers[stargazers.length - 1],
@@ -175,7 +178,7 @@ const main = async () => {
     `Storing info of '${stargazers.length}' stargazers in a json file...`
   );
   fs.writeFileSync(
-    `data/${owner}-${repo}-stargazers-info.json`,
+    fileName,
     JSON.stringify({
       lastStargazer: stargazers[stargazers.length - 1],
       finished: true,
