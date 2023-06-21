@@ -11,6 +11,7 @@
   "scripts": {
     "get-stargazers": "node get-stargazers.js",
     "get-stargazers-info": "node get-stargazers-info.js",
+    "calculate-stargazers-info-stats": "node calculate-stargazers-info-stats.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Rick Staa",
@@ -19,6 +20,7 @@
     "@octokit/plugin-throttling": "^6.1.0",
     "@octokit/rest": "^19.0.13",
     "axios": "^1.4.0",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "simple-statistics": "^7.8.3"
   }
 }

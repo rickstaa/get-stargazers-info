@@ -116,7 +116,6 @@ const main = async () => {
 
         // Store main info.
         infoTmp = {
-          name: stargazer,
           yearCommits:
             data.user.contributionsCollection.totalCommitContributions,
           prs: data.user.pullRequests.totalCount,
@@ -142,7 +141,7 @@ const main = async () => {
         };
 
         // Store total commits.
-        infoTmp = { ...infoTmp, ...totalCommits };
+        infoTmp = {name: stargazer, ...infoTmp, ...totalCommits };
       }
 
       // Store info add total commits if 'env.process.TOTAL_COMMITS' is set to true.
