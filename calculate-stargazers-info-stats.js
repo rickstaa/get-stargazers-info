@@ -55,75 +55,95 @@ const main = async () => {
   const meanStars = mean(stars);
   const medianStars = median(stars);
   const standardDeviationStars = standardDeviation(stars);
+  const maxStars = Math.max(...stars);
   const meanYearCommits = mean(yearCommits);
   const medianYearCommits = median(yearCommits);
   const standardDeviationYearCommits = standardDeviation(yearCommits);
+  const maxYearCommits = Math.max(...yearCommits);
   const meanPrs = mean(prs);
   const medianPrs = median(prs);
   const standardDeviationPrs = standardDeviation(prs);
+  const maxPrs = Math.max(...prs);
   const meanIssues = mean(issues);
   const medianIssues = median(issues);
   const standardDeviationIssues = standardDeviation(issues);
+  const maxIssues = Math.max(...issues);
   const meanRepos = mean(repos);
   const medianRepos = median(repos);
   const standardDeviationRepos = standardDeviation(repos);
+  const maxRepos = Math.max(...repos);
   const meanReviews = mean(reviews);
   const medianReviews = median(reviews);
   const standardDeviationReviews = standardDeviation(reviews);
+  const maxReviews = Math.max(...reviews);
   const meanFollowers = mean(followers);
   const medianFollowers = median(followers);
   const standardDeviationFollowers = standardDeviation(followers);
+  const maxFollowers = Math.max(...followers);
   const meanDiscussionsAnswered = mean(discussionsAnswered);
   const medianDiscussionsAnswered = median(discussionsAnswered);
   const standardDeviationDiscussionsAnswered =
     standardDeviation(discussionsAnswered);
+  const maxDiscussionsAnswered = Math.max(...discussionsAnswered);
   const meanDiscussionsStarted = mean(discussionsStarted);
   const medianDiscussionsStarted = median(discussionsStarted);
   const standardDeviationDiscussionsStarted =
     standardDeviation(discussionsStarted);
+  const maxDiscussionsStarted = Math.max(...discussionsStarted);
   const meanTotalCommits = mean(totalCommits);
   const medianTotalCommits = median(totalCommits);
   const standardDeviationTotalCommits = standardDeviation(totalCommits);
+  const maxTotalCommits = Math.max(...totalCommits);
 
   // Print the results.
   console.log(`Mean stars: ${meanStars}`);
   console.log(`Median stars: ${medianStars}`);
   console.log(`Standard deviation stars: ${standardDeviationStars}`);
+  console.log(`Max stars: ${maxStars}`);
   console.log(`Mean year commits: ${meanYearCommits}`);
   console.log(`Median year commits: ${medianYearCommits}`);
   console.log(
     `Standard deviation year commits: ${standardDeviationYearCommits}`
   );
+  console.log(`Max year commits: ${maxYearCommits}`);
   console.log(`Mean PRs: ${meanPrs}`);
   console.log(`Median PRs: ${medianPrs}`);
   console.log(`Standard deviation PRs: ${standardDeviationPrs}`);
+  console.log(`Max PRs: ${maxPrs}`);
   console.log(`Mean issues: ${meanIssues}`);
   console.log(`Median issues: ${medianIssues}`);
   console.log(`Standard deviation issues: ${standardDeviationIssues}`);
+  console.log(`Max issues: ${maxIssues}`);
   console.log(`Mean repos: ${meanRepos}`);
   console.log(`Median repos: ${medianRepos}`);
   console.log(`Standard deviation repos: ${standardDeviationRepos}`);
+  console.log(`Max repos: ${maxRepos}`);
   console.log(`Mean reviews: ${meanReviews}`);
   console.log(`Median reviews: ${medianReviews}`);
   console.log(`Standard deviation reviews: ${standardDeviationReviews}`);
+  console.log(`Max reviews: ${maxReviews}`);
   console.log(`Mean followers: ${meanFollowers}`);
   console.log(`Median followers: ${medianFollowers}`);
   console.log(`Standard deviation followers: ${standardDeviationFollowers}`);
+  console.log(`Max followers: ${maxFollowers}`)
   console.log(`Mean discussions answered: ${meanDiscussionsAnswered}`);
   console.log(`Median discussions answered: ${medianDiscussionsAnswered}`);
   console.log(
     `Standard deviation discussions answered: ${standardDeviationDiscussionsAnswered}`
   );
+  console.log(`Max discussions answered: ${maxDiscussionsAnswered}`);
   console.log(`Mean discussions started: ${meanDiscussionsStarted}`);
   console.log(`Median discussions started: ${medianDiscussionsStarted}`);
   console.log(
     `Standard deviation discussions started: ${standardDeviationDiscussionsStarted}`
   );
+  console.log(`Max discussions started: ${maxDiscussionsStarted}`);
   console.log(`Mean total commits: ${meanTotalCommits}`);
   console.log(`Median total commits: ${medianTotalCommits}`);
   console.log(
     `Standard deviation total commits: ${standardDeviationTotalCommits}`
   );
+  console.log(`Max total commits: ${maxTotalCommits}`);
 };
 
 main();
