@@ -23,6 +23,13 @@ const main = async () => {
     ? `data/total-commits-${owner}-${repo}-stargazers-info.json`
     : `data/${owner}-${repo}-stargazers-info.json`;
 
+  // Throw error if both MAIN_INFO and TOTAL_COMMITS are set to false.
+  if (!getMainInfo && !getTotalCommits) {
+    throw new Error(
+      "Both MAIN_INFO and TOTAL_COMMITS are set to false. Nothing to do."
+    );
+  }
+  
   // Create data folder if it doesn't exist.
   if (!fs.existsSync("data")) {
     fs.mkdirSync("data");

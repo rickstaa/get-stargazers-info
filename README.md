@@ -4,8 +4,8 @@ Contains scripts that can be used to get information about the stargazers of a G
 
 ## How to use
 
-1.  Install the npm dependencies with `npm install`.
-2.  Create a `.env` file with the following content:
+1. Install the npm dependencies with `npm install`.
+2. Create a `.env` file with the following content:
 
 ```env
 GITHUB_TOKEN=YOUR_GITHUB_TOKEN
@@ -17,10 +17,12 @@ MAIN_INFO=true
 TOTAL_COMMITS=false
 USE_GRAPHQL=false # Only use for the 'get-stargazers' script. Slower but doesn't have a 40 pages limit.
 LOAD=false # Whether to continue from the last saved point or start from scratch. Only use for the 'get-stargazers' script.
+REMOVE_ZERO_VALUES=false # Only used for the `calculate-stargazers-info-stats` script.
+REMOVE_ZERO_USERS=false # Only used for the `calculate-stargazers-info-stats` script.
 ```
 
-1.  Run the `get-stargazers.js` script with `npm run get-stargazers` to get the stargazers of the repository.
-2.  Run the `get-stargazer-info.js` script with `npm run get-stargazer-info` to get the information about the stargazers.
+1. Run the `get-stargazers.js` script with `npm run get-stargazers` to get the stargazers of the repository.
+2. Run the `get-stargazer-info.js` script with `npm run get-stargazer-info` to get the information about the stargazers.
 
 Data is stored in the `data` folder. The `get-stargazers.js` script will create a `<OWNER>-<REPO>-stargazers.json` file with the stargazers of the repository. The `get-stargazer-info.js` script will create a `<OWNER>-<REPO>-stargazer-info.json` file with the information about the stargazers.
 

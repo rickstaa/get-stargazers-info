@@ -15,6 +15,8 @@ const main = async () => {
   const fileName = getTotalCommits
     ? `data/total-commits-${owner}-${repo}-stargazers-info.json`
     : `data/${owner}-${repo}-stargazers-info.json`;
+  const removeZeroValues = process.env.REMOVE_ZERO_VALUES === "true";
+  const removeZeroUsers = process.env.REMOVE_ZERO_USERS === "true";
 
   // Retrieve the stargazers from the json file.
   let infoData;
@@ -26,30 +28,82 @@ const main = async () => {
     );
     return;
   }
-  console.log(`Retrieved info of ${infoData.info.length} stargazers.`);
-  const stargazersInfo = infoData.info;
+  console.log(`Retrieved info of '${infoData.info.length}' stargazers.`);
+  let stargazersInfo = infoData.info;
 
   // Retrieve yearCommits from the stargazersInfo.
-  const stars = stargazersInfo.map((stargazerInfo) => stargazerInfo.stars);
-  const yearCommits = stargazersInfo.map(
+  let stars = stargazersInfo.map((stargazerInfo) => stargazerInfo.stars);
+  let yearCommits = stargazersInfo.map(
     (stargazerInfo) => stargazerInfo.yearCommits
   );
-  const prs = stargazersInfo.map((stargazerInfo) => stargazerInfo.prs);
-  const issues = stargazersInfo.map((stargazerInfo) => stargazerInfo.issues);
-  const repos = stargazersInfo.map((stargazerInfo) => stargazerInfo.repos);
-  const reviews = stargazersInfo.map((stargazerInfo) => stargazerInfo.reviews);
-  const followers = stargazersInfo.map(
+  let prs = stargazersInfo.map((stargazerInfo) => stargazerInfo.prs);
+  let issues = stargazersInfo.map((stargazerInfo) => stargazerInfo.issues);
+  let repos = stargazersInfo.map((stargazerInfo) => stargazerInfo.repos);
+  let reviews = stargazersInfo.map((stargazerInfo) => stargazerInfo.reviews);
+  let followers = stargazersInfo.map(
     (stargazerInfo) => stargazerInfo.followers
   );
-  const discussionsAnswered = stargazersInfo.map(
+  let discussionsAnswered = stargazersInfo.map(
     (stargazerInfo) => stargazerInfo.discussionsAnswered
   );
-  const discussionsStarted = stargazersInfo.map(
+  let discussionsStarted = stargazersInfo.map(
     (stargazerInfo) => stargazerInfo.discussionsStarted
   );
-  const totalCommits = stargazersInfo.map(
+  let totalCommits = stargazersInfo.map(
     (stargazerInfo) => stargazerInfo.totalCommits
   );
+
+  // Remove all users which have 0 values in all stats.
+  if (removeZeroUsers) {
+    stargazersInfo = infoData.info.filter(
+      (stargazerInfo) => !(
+        stargazerInfo.stars == 0 &&
+        stargazerInfo.yearCommits === 0 &&
+        stargazerInfo.prs === 0 &&
+        stargazerInfo.issues === 0 &&
+        stargazerInfo.repos === 0 &&
+        stargazerInfo.reviews === 0 &&
+        stargazerInfo.followers === 0 &&
+        stargazerInfo.discussionsAnswered === 0 &&
+        stargazerInfo.discussionsStarted === 0) || stargazerInfo.totalCommits === 0
+    );
+    console.log(`Removed '${infoData.info.length - stargazersInfo.length}' users with 0 values in all stats.`);
+    console.log(`Data of '${stargazersInfo.length}' users remaining.`);
+  }
+
+  // Clip user stats with 0 values.
+  if (removeZeroValues) {
+    stars = stars[0] === undefined ? stars : stars.filter((star) => star > 0);
+    yearCommits =
+      yearCommits[0] === undefined
+        ? yearCommits
+        : yearCommits.filter((yearCommit) => yearCommit > 0);
+    prs = prs[0] === undefined ? prs : prs.filter((pr) => pr > 0);
+    issues =
+      issues[0] === undefined ? issues : issues.filter((issue) => issue > 0);
+    repos = repos[0] === undefined ? repos : repos.filter((repo) => repo > 0);
+    reviews =
+      reviews[0] === undefined ? reviews : reviews.filter((review) => review > 0);
+    followers =
+      followers[0] === undefined
+        ? followers
+        : followers.filter((follower) => follower > 0);
+    discussionsAnswered =
+      discussionsAnswered[0] === undefined
+        ? discussionsAnswered
+        : discussionsAnswered.filter(
+          (discussionAnswered) => discussionAnswered > 0
+        );
+    discussionsStarted =
+      discussionsStarted[0] === undefined
+        ? discussionsStarted
+        : discussionsStarted.filter((discussionStarted) => discussionStarted > 0);
+    totalCommits =
+      totalCommits[0] === undefined
+        ? totalCommits
+        : totalCommits.filter((totalCommit) => totalCommit > 0);
+    console.log(`Removed stats with '0' values.`);
+  }
 
   // Calculate mean, median and standard deviation.
   const meanStars = mean(stars);
@@ -125,7 +179,7 @@ const main = async () => {
   console.log(`Mean followers: ${meanFollowers}`);
   console.log(`Median followers: ${medianFollowers}`);
   console.log(`Standard deviation followers: ${standardDeviationFollowers}`);
-  console.log(`Max followers: ${maxFollowers}`)
+  console.log(`Max followers: ${maxFollowers}`);
   console.log(`Mean discussions answered: ${meanDiscussionsAnswered}`);
   console.log(`Median discussions answered: ${medianDiscussionsAnswered}`);
   console.log(
