@@ -11,7 +11,7 @@ require("dotenv").config();
 const main = async () => {
   const repo = process.env.REPO;
   const owner = process.env.OWNER;
-  const getTotalCommits = process.env.GET_TOTAL_COMMITS === "true";
+  const getTotalCommits = process.env.TOTAL_COMMITS === "true";
   const fileName = getTotalCommits
     ? `data/total-commits-${owner}-${repo}-stargazers-info.json`
     : `data/${owner}-${repo}-stargazers-info.json`;
